@@ -1,11 +1,15 @@
 package me.yic.xconomy;
 
+import lombok.Getter;
 import me.yic.xconomy.data.DataCon;
 import me.yic.xconomy.data.DataFormat;
 import me.yic.xconomy.data.SQL;
 import me.yic.xconomy.data.caches.Cache;
 import me.yic.xconomy.depend.Placeholder;
 import me.yic.xconomy.depend.Vault;
+import me.yic.xconomy.leaderboard.LeaderBoardCommand;
+import me.yic.xconomy.leaderboard.LeaderBoardImpl;
+import me.yic.xconomy.leaderboard.PlayerListener;
 import me.yic.xconomy.listeners.ConnectionListeners;
 import me.yic.xconomy.listeners.SPsync;
 import me.yic.xconomy.message.Messages;
@@ -21,12 +25,18 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 
 public class XConomy extends JavaPlugin {
 
@@ -39,6 +49,8 @@ public class XConomy extends JavaPlugin {
 	Metrics metrics = null;
 	private Placeholder papiExpansion = null;
 	public static Boolean ddrivers = false;
+	@Getter
+	private final HashMap<Player, LeaderBoardImpl> hd=new HashMap<>();//huanmeng_qwq
 
 	public void onEnable() {
 		instance = this;
@@ -70,6 +82,7 @@ public class XConomy extends JavaPlugin {
 
 		getServer().getServicesManager().register(Economy.class, econ, this, ServicePriority.Normal);
 		getServer().getPluginManager().registerEvents(new ConnectionListeners(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerListener(),this);//huanmeng_qwq
 
 		metrics = new Metrics(this, 6588);
 
@@ -78,6 +91,7 @@ public class XConomy extends JavaPlugin {
 		Bukkit.getPluginCommand("balancetop").setExecutor(new Commands());
 		Bukkit.getPluginCommand("pay").setExecutor(new Commands());
 		Bukkit.getPluginCommand("xconomy").setExecutor(new Commands());
+		new LeaderBoardCommand().register();//huanmeng_qwq
 
 		if (config.getBoolean("Settings.eco-command")) {
 			try {
@@ -250,4 +264,8 @@ public class XConomy extends JavaPlugin {
 		Command commande  = new EconomyCommand("eeconomy");
 		commandMap.register("eeconomy", commande);
 	}
+
+    public boolean isLeaderBoard() {//huanmeng_qwq
+		return config.getBoolean("leaderboard.enable",false)&&config.getBoolean("Settings.mysql");
+    }
 }

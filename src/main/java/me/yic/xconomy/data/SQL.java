@@ -5,6 +5,7 @@ import me.yic.xconomy.data.caches.NonPlayerCache;
 import me.yic.xconomy.message.Messages;
 import me.yic.xconomy.XConomy;
 import me.yic.xconomy.utils.DatabaseConnection;
+import me.yic.xconomy.utils.KeyValue;
 import me.yic.xconomy.utils.RecordData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -63,7 +64,7 @@ public class SQL {
 		try {
 			Connection connection = database.getConnectionAndCheck();
 			Statement statement = connection.createStatement();
-
+			database.createTables("cache",new KeyValue("uuid","VARCHAR(40)").add("name","VARCHAR(20)"),null);//huanmeng_qwq
 			if (statement == null) {
 				return;
 			}

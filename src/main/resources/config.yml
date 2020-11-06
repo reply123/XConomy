@@ -80,3 +80,7 @@ BungeeCord:
   enable: false
   #Server ID, keep the ID and the MySQL settings is the same between the servers requiring synchronization
   sign: aa
+
+leaderboard:
+  enable: false
+  location: world,0.5,100.5,0.5
